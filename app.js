@@ -11,8 +11,10 @@ request({
 }, (error, response, body) => {
     //body.results[0].locations[0].latLng.lat
     //body.results[0].locations[0].latLng.lng
-    
-    console.log(body);
-    console.log(body.results[0].locations[0].latLng.lat);
-    console.log(body.results[0].locations[0].latLng.lng);
+
+    // console.log(body);
+    // console.log(JSON.stringify(response, undefined, 2));
+    console.log(`Address: ${body.results[0].providedLocation.location}`);
+    console.log(`Latitude: ${body.results[0].locations[0].latLng.lat}`);
+    console.log(`Longitutde: ${body.results[0].locations[0].latLng.lng}`);
 });
