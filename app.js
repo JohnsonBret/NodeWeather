@@ -4,9 +4,28 @@
 //kawa1
 
 const request = require('request');
+const yargs = require('yargs');
+
+const argv =  yargs
+.options({
+    a: {
+        demand: true,
+        alias: 'address',
+        describe: 'Address to fetch weather for',
+        string: true
+    }
+})
+.help()
+.alias('help', 'h')
+.argv;
+
+console.log(`Yargs Address Encoded:  ${JSON.stringify(encodeURI(argv.a))}`);
+var encodedAddress = encodeURI(argv.a);
+
+
 
 request({
-    url: 'http://www.mapquestapi.com/geocoding/v1/address?key=xpWEulU4cMA4WETcC5V3681wz9TNJ96T&location=1301%20lombard%20street%20philadelphia',
+    url: `http://www.mapquestapi.com/geocoding/v1/address?key=xpWEulU4cMA4WETcC5V3681wz9TNJ96T&location=${encodedAddress}`,
     json: true
 }, (error, response, body) => {
     //body.results[0].locations[0].latLng.lat
