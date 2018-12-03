@@ -1,10 +1,11 @@
-//mapquest 
-//https://developer.mapquest.com/user/me/profile
-//bjizzle
-//kawa1
+// 1bf8fa738db75403660202f851c66313
+// https://api.darksky.net/forecast/apikey/lat,long
 
-const request = require('request');
+
 const yargs = require('yargs');
+
+const geocode = require('./geocode/geocode.js');
+const weather = require('./weather/weather.js');
 
 const argv =  yargs
 .options({
@@ -19,32 +20,35 @@ const argv =  yargs
 .alias('help', 'h')
 .argv;
 
-console.log(`Yargs Address Encoded:  ${JSON.stringify(encodeURI(argv.address))}`);
-var encodedAddress = encodeURI(argv.address);
+//Debug - See what Yargs Encoded
+// console.log(`Yargs Address Encoded:  ${JSON.stringify(encodeURI(argv.address))}`);
 
+geocode.geocodeAddress(argv.address, (errorMessage, results) => {
 
-
-request({
-    // url: `http://www.mapquestapi.com/geocoding/v1/address?key=xpWEulU4cMA4WETcC5V3681wz9TNJ96T&location=${encodedAddress}`,
-    url: `http://www.mapquestapi.com/geocoding/v1/address?key=xpWEulU4cMA4WETcC5V3681wz9TNJ96T&location=**&*((`,
-    json: true
-}, (error, response, body) => {
-
-    if(error){
-        console.log('Unable to connect to Mapquest Servers');
+    if(errorMessage)
+    {
+        console.log(errorMessage);
     }
-    else if(response.headers["content-length"] === "0"){
-        // console.log(JSON.stringify(response.headers["content-length"]));
-        console.log("Your address is invalid");
+    else
+    {
+        console.log(results.address);
     }
 
-    //body.results[0].locations[0].latLng.lat
-    //body.results[0].locations[0].latLng.lng
+    //Move this
+    weather.getWeather(results.latitude, results.longitude, (errorMsg, weatherResults ) => {
 
-    // console.log(body);
-    // console.log(JSON.stringify(response, undefined, 2));
-    // console.log(JSON.stringify(error, undefined, 2));
-    // console.log(`Address: ${body.results[0].providedLocation.location}`);
-    // console.log(`Latitude: ${body.results[0].locations[0].latLng.lat}`);
-    // console.log(`Longitutde: ${body.results[0].locations[0].latLng.lng}`);
+        if(errorMsg)
+        {
+            console.log(errorMsg);
+        }
+        else
+        {
+            console.log(`It's currently ${weatherResults.temperature} but it feels like ${weatherResults.apparentTemp}`);
+            //console.log(JSON.stringify(weatherResults, undefined, 2));
+        }
+        
+    });
+
 });
+
+
